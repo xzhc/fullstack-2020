@@ -97,6 +97,53 @@ describe('post /api/blogs', () => {
   }, 10000)
 })
 
+describe('delete /api/blogs', () => {
+  test('DELETE /api/blogs/:id should delete a blog post', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1)
+
+    const titles = blogsAtEnd.map(blog => blog.title)
+
+    expect(titles).not.toContain(blogToDelete.title)
+  })
+
+  test('DELETE /api/blogs/:id should return 404 if blog post does not exist', async () => {
+    const noExistingId = await helper.noExistingId()
+    console.log(noExistingId)
+    await api
+      .delete(`/api/blogs/${noExistingId}`)
+      .expect(404)
+  })
+})
+
+describe('update /api/blogs', () => {
+  test('PUT /api/blogs/:id should update a blog post', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToUpdate = blogsAtStart[0]
+
+    const updateBlog = {
+      ...blogToUpdate,
+      likes: blogToUpdate.likes + 1
+    }
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updateBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    const updateBlogAtEnd = blogsAtEnd.find(blog => blog.id === blogToUpdate.id)
+    expect(updateBlogAtEnd.likes).toBe(blogToUpdate.likes + 1)
+  })
+})
 
 afterAll( () => {
   mongoose.connection.close()
