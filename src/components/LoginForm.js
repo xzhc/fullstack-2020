@@ -22,15 +22,15 @@ const LoginForm = ({ handleLogin }) => {
       {/* 输入用户名和密码 */}
       <div>
               username
-        <input type="text" value={username} name="Username" onChange={ handleUsernameChange}
+        <input type="text" id='username' value={username} name="Username" onChange={ handleUsernameChange}
         />
       </div>
       <div>
               password
-        <input type="password" value={password} name="Password" onChange={ handlePasswordChange}
+        <input type="password" id='password' value={password} name="Password" onChange={ handlePasswordChange}
         />
       </div>
-      <button type="submit">login</button>
+      <button id='login-button' type="submit">login</button>
     </form>
   )
 }

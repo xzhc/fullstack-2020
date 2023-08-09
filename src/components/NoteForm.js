@@ -1,10 +1,10 @@
-import { useState } from "react"
+import { useState } from 'react'
 
 
-const NoteForm = ({ createNote}) => {
-    const [newNote, setNewNote] = useState('')
+const NoteForm = ({ createNote }) => {
+  const [newNote, setNewNote] = useState('')
 
-    //处理笔记内容改变的事件
+  //处理笔记内容改变的事件
   const handleNoteChange = (event) => {
     setNewNote(event.target.value)
   }
@@ -13,28 +13,23 @@ const NoteForm = ({ createNote}) => {
   const handleSubmit = (event) => {
     event.preventDefault()
     createNote({
-        content: newNote,
-        important: Math.random() > 0.5
-      }) 
+      content: newNote,
+      important: false
+    })
 
     setNewNote('')
-    
   }
 
-    return (
+  return (
     <div>
-        <h2>Create a new note</h2>
-        <form onSubmit={handleSubmit}>
-            <input value={newNote} onChange={handleNoteChange} />
-            <button type="submit">save</button>
-        </form>
+      <h2>Create a new note</h2>
+      <form onSubmit={handleSubmit}>
+        <input value={newNote} onChange={handleNoteChange} placeholder='write here note content'/>
+        <button type="submit">save</button>
+      </form>
     </div>
-    )
+  )
 }
 
-
-    
-    
-  
 
 export default NoteForm
