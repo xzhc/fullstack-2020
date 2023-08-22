@@ -1,4 +1,5 @@
-const { ApolloServer, UserInputError, gql} = require('apollo-server')
+const { ApolloServer, gql} = require('apollo-server')
+const { GraphQLError} = require('graphql')
 const { v1: uuid } = require('uuid')
 let persons = [
     {
@@ -43,7 +44,7 @@ const typeDefs = gql`
 
     type Query {
         personCount: Int!
-        allPersons: (phone: YesNo): [Person!]!
+        allPersons(phone: YesNo): [Person!]!
         findPerson(name: String!): Person
     }
 
@@ -87,8 +88,11 @@ const resolvers = {
     Mutation: {
         addPerson: (root,args) => {
             if ( persons.find(p => p.name === args.name)) {
-                throw new UserInputError('Name must be unique', {
-                    invalidArgs: args.name
+                throw new GraphQLError('Name must be unique', {
+                    extensions: {
+                        code: 'BAD_USER_INPUT',
+                        invalidArgs: args.name
+                    }
                 })
             }
             const person = {...args, id: uuid()}
